@@ -2,7 +2,7 @@ import { useReactiveVar } from "@apollo/client";
 import { darkModeVar } from "./apollo";
 import { ThemeProvider } from "styled-components";
 import { GlobalStyle, darkTheme, lightTheme } from "./styles";
-import Router from "./router";
+import Router from "./Router";
 
 function Root() {
   const darkMode = useReactiveVar(darkModeVar);

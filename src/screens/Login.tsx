@@ -2,6 +2,7 @@ import { styled } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithubSquare } from "@fortawesome/free-brands-svg-icons";
 import { Link } from "react-router-dom";
+import routes from "../Routes";
 
 const Container = styled.div`
   display: flex;
@@ -152,7 +153,7 @@ function Login() {
         </TopBox>
         <BottomBox>
           <span>Don't have an account?</span>
-          <Link to="/sign-up">Sign up</Link>
+          <Link to={routes.signUp}>Sign up</Link>
         </BottomBox>
       </Wrapper>
     </Container>
