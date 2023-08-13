@@ -5,7 +5,10 @@ import reset from "styled-reset";
 export const lightTheme: DefaultTheme = {
   fontColor: "#2c2c2c",
   bgColor: "white",
-  accent: "#4cb5f9",
+  grayColor: "#737373",
+  accentLight: "#4cb5f9",
+  accentNormal: "#0095f6",
+  accentDark: "#00376b",
   borderColor: "rgb(219,219,219)",
 };
 

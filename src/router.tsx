@@ -4,7 +4,7 @@ import Login from "./screens/Login";
 import SignUp from "./screens/Signup";
 import { useReactiveVar } from "@apollo/client";
 import { isLoggedInVar } from "./apollo";
-import routes from "./Routes";
+import routes from "./routes";
 
 function Router() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);

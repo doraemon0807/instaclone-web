@@ -5,8 +5,6 @@ const SSeparator = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  max-width: 270px;
-  margin-bottom: 30px;
 
   div {
     display: block;

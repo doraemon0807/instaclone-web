@@ -1,13 +1,13 @@
 import { styled } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithubSquare } from "@fortawesome/free-brands-svg-icons";
-import routes from "../Routes";
+import routes from "../routes";
 import AuthLayout from "./components/auth/AuthLayout";
-import Button from "./components/auth/Button";
 import Separator from "./components/auth/Separator";
-import Input from "./components/auth/Input";
 import FormBox from "./components/auth/FormBox";
 import BottomBox from "./components/auth/BottomBox";
+import { Input } from "./components/shared/SharedStyle";
+import InputButton from "./components/auth/InputButton";
 
 const Title = styled.h1`
   margin-bottom: 55px;
@@ -17,12 +17,12 @@ const Title = styled.h1`
   color: ${(props) => props.theme.fontColor};
 `;
 
-const FacebookLogin = styled.div`
-  color: #385185;
+const GithubLogin = styled.div`
+  color: ${(props) => props.theme.accentDark};
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 25px;
+  margin: 25px 0px;
   cursor: pointer;
   span {
     font-weight: 500;
@@ -40,18 +40,18 @@ const ForgotPassword = styled.span`
 function Login() {
   return (
     <AuthLayout>
-      <FormBox>
+      <FormBox maxWidth={270}>
         <Title>Outstagram</Title>
         <form>
           <Input type="text" placeholder="Phone number, username, or email" />
           <Input type="password" placeholder="Password" />
-          <Button type="submit" value="Log in" />
+          <InputButton type="submit" value="Log in" />
         </form>
         <Separator value="Or" />
-        <FacebookLogin>
+        <GithubLogin>
           <FontAwesomeIcon size="2xl" icon={faGithubSquare} />
           <span>Log in with Github</span>
-        </FacebookLogin>
+        </GithubLogin>
         <ForgotPassword>Forgot password?</ForgotPassword>
       </FormBox>
       <BottomBox

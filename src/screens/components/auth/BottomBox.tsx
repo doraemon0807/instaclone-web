@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { styled } from "styled-components";
-import { BaseBox } from "../shared";
+import { BaseBox } from "../shared/SharedStyle";
 
 const SBottomBox = styled(BaseBox)`
   padding: 20px 0px;
@@ -11,7 +11,7 @@ const SBottomBox = styled(BaseBox)`
   }
   a {
     font-weight: 600;
-    color: ${(props) => props.theme.accent};
+    color: ${(props) => props.theme.accentNormal};
   }
 `;
 
