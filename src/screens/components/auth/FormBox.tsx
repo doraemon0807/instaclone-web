@@ -1,4 +1,4 @@
-import { css, styled } from "styled-components";
+import { styled } from "styled-components";
 import { BaseBox } from "../shared/SharedStyle";
 
 const Container = styled(BaseBox)`
@@ -10,18 +10,13 @@ const Container = styled(BaseBox)`
   margin-bottom: 10px;
 `;
 
-const SubContainer = styled.div<{ maxWidth?: number }>`
+const SubContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  ${(props) =>
-    props.maxWidth
-      ? css`
-          max-width: ${props.maxWidth}px;
-        `
-      : css``}
+  max-width: 270px;
   form {
     display: flex;
     justify-content: center;
@@ -33,13 +28,12 @@ const SubContainer = styled.div<{ maxWidth?: number }>`
 
 interface IProps {
   children: React.ReactNode;
-  maxWidth?: number;
 }
 
-function FormBox({ children, maxWidth }: IProps) {
+function FormBox({ children }: IProps) {
   return (
     <Container>
-      <SubContainer maxWidth={maxWidth}>{children}</SubContainer>
+      <SubContainer>{children}</SubContainer>
     </Container>
   );
 }

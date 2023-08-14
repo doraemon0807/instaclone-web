@@ -8,6 +8,8 @@ import FormBox from "./components/auth/FormBox";
 import BottomBox from "./components/auth/BottomBox";
 import { Input } from "./components/shared/SharedStyle";
 import InputButton from "./components/auth/InputButton";
+import PageTitle from "./components/shared/PageTitle";
+import { useForm } from "react-hook-form";
 
 const Title = styled.h1`
   margin-bottom: 55px;
@@ -38,13 +40,23 @@ const ForgotPassword = styled.span`
 `;
 
 function Login() {
+  const { register, handleSubmit, watch } = useForm();
   return (
     <AuthLayout>
-      <FormBox maxWidth={270}>
+      <PageTitle title="Login" />
+      <FormBox>
         <Title>Outstagram</Title>
         <form>
-          <Input type="text" placeholder="Phone number, username, or email" />
-          <Input type="password" placeholder="Password" />
+          <Input
+            type="text"
+            placeholder="Phone number, username, or email"
+            {...register("username", { required: true })}
+          />
+          <Input
+            type="password"
+            placeholder="Password"
+            {...register("password", { required: true })}
+          />
           <InputButton type="submit" value="Log in" />
         </form>
         <Separator value="Or" />

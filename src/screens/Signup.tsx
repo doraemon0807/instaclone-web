@@ -10,6 +10,7 @@ import { Input } from "./components/shared/SharedStyle";
 import InputButton from "./components/auth/InputButton";
 import TextButton from "./components/shared/TextButton";
 import { Link } from "react-router-dom";
+import PageTitle from "./components/shared/PageTitle";
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -61,7 +62,8 @@ const ToC = styled.div`
 function SignUp() {
   return (
     <AuthLayout>
-      <FormBox maxWidth={270}>
+      <PageTitle title="Sign Up" />
+      <FormBox>
         <HeaderContainer>
           <Title>Outstagram</Title>
           <Subtitle>
