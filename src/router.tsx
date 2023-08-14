@@ -5,6 +5,7 @@ import SignUp from "./screens/Signup";
 import { useReactiveVar } from "@apollo/client";
 import { isLoggedInVar } from "./apollo";
 import routes from "./routes";
+import Layout from "./screens/components/Layout";
 
 function Router() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
@@ -13,7 +14,15 @@ function Router() {
       <Routes>
         <Route
           path={routes.home}
-          element={isLoggedIn ? <Home /> : <Login />}
+          element={
+            isLoggedIn ? (
+              <Layout>
+                <Home />
+              </Layout>
+            ) : (
+              <Login />
+            )
+          }
         ></Route>
         {!isLoggedIn ? (
           <Route path={routes.signUp} element={<SignUp />}></Route>

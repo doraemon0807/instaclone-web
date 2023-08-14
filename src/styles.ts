@@ -5,21 +5,21 @@ import reset from "styled-reset";
 export const lightTheme: DefaultTheme = {
   fontColor: "#2c2c2c",
   bgColor: "#fafafa",
-  grayColor: "#737373",
   accentLight: "#4cb5f9",
   accentNormal: "#0095f6",
   accentDark: "#00376b",
   borderColor: "rgb(219,219,219)",
+  grayColor: "#737373",
 };
 
 export const darkTheme: DefaultTheme = {
   fontColor: "#fafafa",
   bgColor: "#2c2c2c",
-  grayColor: "#737373",
   accentLight: "#00376b",
   accentNormal: "#0095f6",
   accentDark: "#4cb5f9",
   borderColor: "rgb(219,219,219)",
+  grayColor: "#737373",
 };
 
 export const GlobalStyle = createGlobalStyle`
