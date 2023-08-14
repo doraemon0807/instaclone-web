@@ -17,3 +17,7 @@ export const Button = styled.div`
   width: 100%;
   cursor: pointer;
 `;
+
+export const Notification = styled.div`
+  color: #18c460;
+`;

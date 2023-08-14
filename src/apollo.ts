@@ -1,4 +1,6 @@
 import { ApolloClient, InMemoryCache, makeVar } from "@apollo/client";
+import { NavigateFunction } from "react-router-dom";
+import routes from "./routes";
 
 const TOKEN = "token";
 
@@ -15,9 +17,10 @@ export const logUserIn = (token: string) => {
 };
 
 // log out: delete token from localstorage and set isLoggedInVar to false
-export const logUserOut = () => {
+export const logUserOut = (navigate: NavigateFunction) => {
   localStorage.removeItem(TOKEN);
   isLoggedInVar(false);
+  navigate(routes.home, { replace: true });
 };
 
 // apollo client

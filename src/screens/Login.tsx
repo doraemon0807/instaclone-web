@@ -13,6 +13,8 @@ import FormError from "./components/auth/FormError";
 import Input from "./components/auth/FormInput";
 import { gql, useMutation } from "@apollo/client";
 import { logUserIn } from "../apollo";
+import { useLocation } from "react-router-dom";
+import { Notification } from "./components/shared/SharedStyle";
 
 const Title = styled.h1`
   margin-bottom: 55px;
@@ -59,6 +61,8 @@ const LOGIN_MUTATION = gql`
 `;
 
 function Login() {
+  const location = useLocation();
+
   const {
     register,
     handleSubmit,
@@ -68,6 +72,10 @@ function Login() {
     formState: { errors, isValid },
   } = useForm<ILoginForm>({
     mode: "onSubmit",
+    defaultValues: {
+      username: location?.state?.username || "",
+      password: location?.state?.password || "",
+    },
   });
 
   // when mutation is completed
@@ -89,7 +97,7 @@ function Login() {
   });
 
   // when form is submitted, run login mutation
-  const onSubmitValid: SubmitHandler<ILoginForm> = (data) => {
+  const onSubmitValid: SubmitHandler<ILoginForm> = () => {
     const { username, password } = getValues();
     if (loading) {
       return;
@@ -112,6 +120,7 @@ function Login() {
       <PageTitle title="Login" />
       <FormBox>
         <Title>Outstagram</Title>
+        <Notification>{location?.state?.message}</Notification>
         <form onSubmit={handleSubmit(onSubmitValid)} onFocus={clearLoginError}>
           <Input
             {...register("username", {
@@ -122,7 +131,7 @@ function Login() {
               },
             })}
             type="text"
-            placeholder="Phone number, username, or email"
+            placeholder="Username, or email"
             hasError={Boolean(errors?.username?.message)}
           />
           <FormError message={errors?.username?.message} />

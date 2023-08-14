@@ -8,8 +8,12 @@ import FormBox from "./components/auth/FormBox";
 import BottomBox from "./components/auth/BottomBox";
 import InputButton from "./components/auth/InputButton";
 import TextButton from "./components/shared/TextButton";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PageTitle from "./components/shared/PageTitle";
+import Input from "./components/auth/FormInput";
+import { SubmitHandler, useForm } from "react-hook-form";
+import FormError from "./components/auth/FormError";
+import { gql, useMutation } from "@apollo/client";
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -58,7 +62,90 @@ const ToC = styled.div`
   }
 `;
 
+interface ISignUpForm {
+  firstName: string;
+  lastName: string;
+  email: string;
+  username: string;
+  password: string;
+  result?: string;
+}
+
+const CREATE_ACCOUNT_MUTATION = gql`
+  mutation (
+    $firstName: String!
+    $lastName: String!
+    $username: String!
+    $email: String!
+    $password: String!
+  ) {
+    createAccount(
+      firstName: $firstName
+      lastName: $lastName
+      username: $username
+      email: $email
+      password: $password
+    ) {
+      ok
+      error
+    }
+  }
+`;
+
 function SignUp() {
+  const navigate = useNavigate();
+
+  const {
+    register,
+    handleSubmit,
+    getValues,
+    setError,
+    clearErrors,
+    formState: { errors, isValid },
+  } = useForm<ISignUpForm>({
+    mode: "onSubmit",
+  });
+
+  // when mutation is completed
+  const onCompleted = ({ createAccount: { ok, error } }: any) => {
+    if (!ok) {
+      return setError("result", {
+        message: error,
+      });
+    }
+    // if successful, navigate user to home
+    const { username, password } = getValues();
+    navigate(routes.home, {
+      state: { message: "Account created. Please log in.", username, password },
+    });
+  };
+
+  // mutation function to create account
+  const [createAccount, { loading }] = useMutation(CREATE_ACCOUNT_MUTATION, {
+    onCompleted,
+  });
+
+  // when form is submitted, run signup mutation
+  const onSubmitValid: SubmitHandler<ISignUpForm> = () => {
+    if (loading) {
+      return;
+    }
+    const { firstName, lastName, username, email, password } = getValues();
+    createAccount({
+      variables: {
+        firstName,
+        lastName,
+        username,
+        email,
+        password,
+      },
+    });
+  };
+
+  const clearSignUpError = () => {
+    clearErrors("result");
+  };
+
   return (
     <AuthLayout>
       <PageTitle title="Sign Up" />
@@ -80,12 +167,43 @@ function SignUp() {
           </GithubLogin>
           <Separator value="OR" />
         </HeaderContainer>
-        <form>
-          {/* <Input type="text" placeholder="Mobile Number or Email" />
-          <Input type="text" placeholder="Full Name" />
-          <Input type="text" placeholder="Username" />
-          <Input type="password" placeholder="Password" /> */}
-          <InputButton type="submit" value="Sign up" />
+        <form onSubmit={handleSubmit(onSubmitValid)} onFocus={clearSignUpError}>
+          <Input
+            {...register("firstName", { required: "This field is required." })}
+            type="text"
+            placeholder="First Name"
+          />
+          <FormError message={errors?.firstName?.message} />
+          <Input
+            {...register("lastName", { required: "This field is required." })}
+            type="text"
+            placeholder="Last Name"
+          />
+          <FormError message={errors?.lastName?.message} />
+          <Input
+            {...register("email", { required: "This field is required." })}
+            type="text"
+            placeholder="Email"
+          />
+          <FormError message={errors?.email?.message} />
+          <Input
+            {...register("username", { required: "This field is required." })}
+            type="text"
+            placeholder="Username"
+          />
+          <FormError message={errors?.username?.message} />
+          <Input
+            {...register("password", { required: "This field is required." })}
+            type="password"
+            placeholder="Password"
+          />
+          <FormError message={errors?.password?.message} />
+          <FormError message={errors?.result?.message} />
+          <InputButton
+            type="submit"
+            value={loading ? "Loading..." : "Sign Up"}
+            disabled={!isValid || loading}
+          />
         </form>
         <ToC>
           <span>

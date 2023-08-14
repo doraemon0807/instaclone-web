@@ -1,6 +1,6 @@
 import { styled } from "styled-components";
 
-const Input = styled.input<{ hasError: boolean }>`
+const Input = styled.input<{ hasError?: boolean }>`
   width: 100%;
   background-color: #fafafa;
   padding: 10px 8px;
