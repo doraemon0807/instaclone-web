@@ -1,10 +1,23 @@
 import { faUserCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { styled } from "styled-components";
+import { css, styled } from "styled-components";
 
-const SAvatar = styled.div`
-  width: 26px;
-  height: 26px;
+const SAvatar = styled.div<{ size?: string }>`
+  ${(props) =>
+    props.size === "small"
+      ? css`
+          width: 26px;
+          height: 26px;
+        `
+      : props.size === "large"
+      ? css`
+          width: 46px;
+          height: 46px;
+        `
+      : css`
+          width: 36px;
+          height: 36px;
+        `}
   border-radius: 50%;
   overflow: hidden;
   display: flex;
@@ -22,11 +35,12 @@ const Icon = styled.div`
 
 interface IAvatarProps {
   url: string;
+  size?: "small" | "large";
 }
 
-function Avatar({ url = "" }: IAvatarProps) {
+function Avatar({ url = "", size }: IAvatarProps) {
   return (
-    <SAvatar>
+    <SAvatar size={size}>
       {url ? (
         <Img src={url} />
       ) : (

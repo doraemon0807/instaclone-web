@@ -21,3 +21,7 @@ export const Button = styled.div`
 export const Notification = styled.div`
   color: #18c460;
 `;
+
+export const FatText = styled.span`
+  font-weight: 600;
+`;

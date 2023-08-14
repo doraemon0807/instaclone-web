@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import routes from "../../routes";
 
 const Container = styled.div`
+  max-width: 770px;
   display: flex;
   position: fixed;
   top: 0;

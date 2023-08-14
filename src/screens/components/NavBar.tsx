@@ -5,6 +5,7 @@ import useUser from "../hooks/useUser";
 import Avatar from "./shared/Avatar";
 
 const Container = styled.div`
+  max-width: 770px;
   display: flex;
   position: fixed;
   bottom: 0;
@@ -48,7 +49,7 @@ function NavBar() {
           <span>Post</span>
           <span>Inbox</span>
           {isLoggedIn ? (
-            <Avatar url={data?.me?.profile?.avatar} />
+            <Avatar url={data?.me?.profile?.avatar} size="small" />
           ) : (
             <Avatar url="" />
           )}

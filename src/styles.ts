@@ -4,7 +4,7 @@ import reset from "styled-reset";
 
 export const lightTheme: DefaultTheme = {
   fontColor: "#2c2c2c",
-  bgColor: "#fafafa",
+  bgColor: "#fcfcfc",
   accentLight: "#4cb5f9",
   accentNormal: "#0095f6",
   accentDark: "#00376b",
@@ -13,7 +13,7 @@ export const lightTheme: DefaultTheme = {
 };
 
 export const darkTheme: DefaultTheme = {
-  fontColor: "#fafafa",
+  fontColor: "#fcfcfc",
   bgColor: "#2c2c2c",
   accentLight: "#00376b",
   accentNormal: "#0095f6",

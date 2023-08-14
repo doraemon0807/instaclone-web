@@ -26,8 +26,6 @@ function useUser() {
     skip: !hasToken, // skip if user doesn't have a token
   });
 
-  console.log("data is ", data);
-
   useEffect(() => {
     if (data?.me.profile === null) {
       // if the token exist but no user was found because token is faulty
