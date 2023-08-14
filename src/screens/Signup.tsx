@@ -6,7 +6,6 @@ import AuthLayout from "./components/auth/AuthLayout";
 import Separator from "./components/auth/Separator";
 import FormBox from "./components/auth/FormBox";
 import BottomBox from "./components/auth/BottomBox";
-import { Input } from "./components/shared/SharedStyle";
 import InputButton from "./components/auth/InputButton";
 import TextButton from "./components/shared/TextButton";
 import { Link } from "react-router-dom";
@@ -82,10 +81,10 @@ function SignUp() {
           <Separator value="OR" />
         </HeaderContainer>
         <form>
-          <Input type="text" placeholder="Mobile Number or Email" />
+          {/* <Input type="text" placeholder="Mobile Number or Email" />
           <Input type="text" placeholder="Full Name" />
           <Input type="text" placeholder="Username" />
-          <Input type="password" placeholder="Password" />
+          <Input type="password" placeholder="Password" /> */}
           <InputButton type="submit" value="Sign up" />
         </form>
         <ToC>

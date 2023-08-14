@@ -10,6 +10,7 @@ const SInputButton = styled.input`
   border-radius: 5px;
   width: 100%;
   cursor: pointer;
+  opacity: ${(props) => (props.disabled ? "0.5" : "1")};
 `;
 
 function InputButton(props: React.InputHTMLAttributes<HTMLInputElement>) {

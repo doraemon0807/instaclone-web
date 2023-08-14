@@ -6,10 +6,11 @@ import AuthLayout from "./components/auth/AuthLayout";
 import Separator from "./components/auth/Separator";
 import FormBox from "./components/auth/FormBox";
 import BottomBox from "./components/auth/BottomBox";
-import { Input } from "./components/shared/SharedStyle";
 import InputButton from "./components/auth/InputButton";
 import PageTitle from "./components/shared/PageTitle";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
+import FormError from "./components/auth/FormError";
+import Input from "./components/auth/FormInput";
 
 const Title = styled.h1`
   margin-bottom: 55px;
@@ -39,25 +40,52 @@ const ForgotPassword = styled.span`
   cursor: pointer;
 `;
 
+interface ILoginForm {
+  username: string;
+  password: string;
+}
+
 function Login() {
-  const { register, handleSubmit, watch } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<ILoginForm>({
+    mode: "onChange",
+  });
+  const onSubmitValid: SubmitHandler<ILoginForm> = (data) => {
+    console.log(data);
+  };
   return (
     <AuthLayout>
       <PageTitle title="Login" />
       <FormBox>
         <Title>Outstagram</Title>
-        <form>
+        <form onSubmit={handleSubmit(onSubmitValid)}>
           <Input
+            {...register("username", {
+              required: "This field is required.",
+              minLength: {
+                message: "This value is too short.",
+                value: 5,
+              },
+            })}
             type="text"
             placeholder="Phone number, username, or email"
-            {...register("username", { required: true })}
+            hasError={Boolean(errors?.username?.message)}
           />
+          <FormError message={errors?.username?.message} />
           <Input
+            {...register("password", {
+              required: "This field is required.",
+            })}
             type="password"
             placeholder="Password"
-            {...register("password", { required: true })}
+            hasError={Boolean(errors?.password?.message)}
           />
-          <InputButton type="submit" value="Log in" />
+          <FormError message={errors?.password?.message} />
+
+          <InputButton type="submit" value="Log in" disabled={!isValid} />
         </form>
         <Separator value="Or" />
         <GithubLogin>

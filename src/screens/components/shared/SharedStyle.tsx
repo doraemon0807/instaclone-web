@@ -17,13 +17,3 @@ export const Button = styled.div`
   width: 100%;
   cursor: pointer;
 `;
-
-export const Input = styled.input`
-  width: 100%;
-  background-color: #fafafa;
-  padding: 10px 8px;
-  border: 1px solid ${(props) => props.theme.borderColor};
-  font-size: 12px;
-  box-sizing: border-box;
-  margin: 3px 0px;
-`;
