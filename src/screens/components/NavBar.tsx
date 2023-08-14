@@ -28,19 +28,13 @@ const Wrapper = styled.div`
 const Icons = styled.div`
   display: flex;
   width: 100%;
-  justify-content: space-evenly;
+  padding: 0px 20px;
+  justify-content: space-between;
   align-items: center;
 `;
 
 function NavBar() {
   const isLoggedIn = useReactiveVar(isLoggedInVar);
-  // const {
-  //   data: {
-  //     me: { profile: loggedInUser },
-  //   },
-  // } = useUser();
-
-  // console.log("loggedinuser is ", loggedInUser);
 
   const { data } = useUser();
 
@@ -56,7 +50,7 @@ function NavBar() {
           {isLoggedIn ? (
             <Avatar url={data?.me?.profile?.avatar} />
           ) : (
-            <span>Profile</span>
+            <Avatar url="" />
           )}
         </Icons>
       </Wrapper>
