@@ -9,7 +9,7 @@ const SInputButton = styled.input`
   font-weight: 500;
   border-radius: 5px;
   width: 100%;
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? "auto" : "pointer")};
   opacity: ${(props) => (props.disabled ? "0.5" : "1")};
 `;
 

@@ -11,6 +11,8 @@ import PageTitle from "./components/shared/PageTitle";
 import { SubmitHandler, useForm } from "react-hook-form";
 import FormError from "./components/auth/FormError";
 import Input from "./components/auth/FormInput";
+import { gql, useMutation } from "@apollo/client";
+import { logUserIn } from "../apollo";
 
 const Title = styled.h1`
   margin-bottom: 55px;
@@ -43,25 +45,74 @@ const ForgotPassword = styled.span`
 interface ILoginForm {
   username: string;
   password: string;
+  result?: string;
 }
+
+const LOGIN_MUTATION = gql`
+  mutation login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      ok
+      token
+      error
+    }
+  }
+`;
 
 function Login() {
   const {
     register,
     handleSubmit,
+    getValues,
+    setError,
+    clearErrors,
     formState: { errors, isValid },
   } = useForm<ILoginForm>({
-    mode: "onChange",
+    mode: "onSubmit",
   });
-  const onSubmitValid: SubmitHandler<ILoginForm> = (data) => {
-    console.log(data);
+
+  // when mutation is completed
+  const onCompleted = ({ login: { ok, error, token } }: any) => {
+    if (!ok) {
+      return setError("result", {
+        message: error,
+      });
+    }
+    // if token exists, save token to localstorage
+    if (token) {
+      logUserIn(token);
+    }
   };
+
+  // mutation function to log in
+  const [login, { loading }] = useMutation(LOGIN_MUTATION, {
+    onCompleted,
+  });
+
+  // when form is submitted, run login mutation
+  const onSubmitValid: SubmitHandler<ILoginForm> = (data) => {
+    const { username, password } = getValues();
+    if (loading) {
+      return;
+    }
+    login({
+      variables: {
+        username,
+        password,
+      },
+    });
+  };
+
+  // clear error
+  const clearLoginError = () => {
+    clearErrors("result");
+  };
+
   return (
     <AuthLayout>
       <PageTitle title="Login" />
       <FormBox>
         <Title>Outstagram</Title>
-        <form onSubmit={handleSubmit(onSubmitValid)}>
+        <form onSubmit={handleSubmit(onSubmitValid)} onFocus={clearLoginError}>
           <Input
             {...register("username", {
               required: "This field is required.",
@@ -84,8 +135,13 @@ function Login() {
             hasError={Boolean(errors?.password?.message)}
           />
           <FormError message={errors?.password?.message} />
+          <FormError message={errors?.result?.message} />
 
-          <InputButton type="submit" value="Log in" disabled={!isValid} />
+          <InputButton
+            type="submit"
+            value={loading ? "Loading..." : "Log In"}
+            disabled={!isValid || loading}
+          />
         </form>
         <Separator value="Or" />
         <GithubLogin>
