@@ -187,7 +187,13 @@ function SignUp() {
           />
           <FormError message={errors?.email?.message} />
           <Input
-            {...register("username", { required: "This field is required." })}
+            {...register("username", {
+              required: "This field is required.",
+              minLength: {
+                message: "This value is too short.",
+                value: 5,
+              },
+            })}
             type="text"
             placeholder="Username"
           />

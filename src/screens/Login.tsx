@@ -40,7 +40,7 @@ const GithubLogin = styled.div`
 
 const ForgotPassword = styled.span`
   font-size: 12px;
-  color: #00376b;
+  color: ${(props) => props.theme.accentDark};
   cursor: pointer;
 `;
 

@@ -8,6 +8,7 @@ const SBottomBox = styled(BaseBox)`
   font-size: 14px;
   span {
     margin-right: 5px;
+    color: ${(props) => props.theme.fontColor};
   }
   a {
     font-weight: 600;

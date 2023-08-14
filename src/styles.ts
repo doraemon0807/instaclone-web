@@ -4,7 +4,7 @@ import reset from "styled-reset";
 
 export const lightTheme: DefaultTheme = {
   fontColor: "#2c2c2c",
-  bgColor: "white",
+  bgColor: "#fafafa",
   grayColor: "#737373",
   accentLight: "#4cb5f9",
   accentNormal: "#0095f6",
@@ -13,8 +13,13 @@ export const lightTheme: DefaultTheme = {
 };
 
 export const darkTheme: DefaultTheme = {
-  fontColor: "white",
+  fontColor: "#fafafa",
   bgColor: "#2c2c2c",
+  grayColor: "#737373",
+  accentLight: "#00376b",
+  accentNormal: "#0095f6",
+  accentDark: "#4cb5f9",
+  borderColor: "rgb(219,219,219)",
 };
 
 export const GlobalStyle = createGlobalStyle`

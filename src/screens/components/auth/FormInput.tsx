@@ -2,7 +2,7 @@ import { styled } from "styled-components";
 
 const Input = styled.input<{ hasError?: boolean }>`
   width: 100%;
-  background-color: #fafafa;
+  background-color: ${(props) => props.theme.bgColor};
   padding: 10px 8px;
   border: 1px solid
     ${(props) => (props.hasError ? "tomato" : props.theme.borderColor)};
