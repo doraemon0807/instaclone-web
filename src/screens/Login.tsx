@@ -11,10 +11,12 @@ import PageTitle from "./components/shared/PageTitle";
 import { SubmitHandler, useForm } from "react-hook-form";
 import FormError from "./components/auth/FormError";
 import Input from "./components/auth/FormInput";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { logUserIn } from "../apollo";
 import { useLocation } from "react-router-dom";
 import { Notification } from "./components/shared/SharedStyle";
+import { graphql } from "../gql";
+import { LoginMutation } from "../gql/graphql";
 
 const Title = styled.h1`
   margin-bottom: 55px;
@@ -50,7 +52,7 @@ interface ILoginForm {
   result?: string;
 }
 
-const LOGIN_MUTATION = gql`
+const LOGIN_MUTATION = graphql(`
   mutation login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
       ok
@@ -58,7 +60,7 @@ const LOGIN_MUTATION = gql`
       error
     }
   }
-`;
+`);
 
 function Login() {
   const location = useLocation();
@@ -79,10 +81,10 @@ function Login() {
   });
 
   // when mutation is completed
-  const onCompleted = ({ login: { ok, error, token } }: any) => {
+  const onCompleted = ({ login: { ok, error, token } }: LoginMutation) => {
     if (!ok) {
       return setError("result", {
-        message: error,
+        message: error || "",
       });
     }
     // if token exists, save token to localstorage
@@ -92,7 +94,7 @@ function Login() {
   };
 
   // mutation function to log in
-  const [login, { loading }] = useMutation(LOGIN_MUTATION, {
+  const [login, { loading }] = useMutation<LoginMutation>(LOGIN_MUTATION, {
     onCompleted,
   });
 

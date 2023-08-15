@@ -34,7 +34,7 @@ const Icon = styled.div`
 `;
 
 interface IAvatarProps {
-  url: string;
+  url?: string | null;
   size?: "small" | "large";
 }
 

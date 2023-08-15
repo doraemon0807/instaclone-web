@@ -13,7 +13,9 @@ import PageTitle from "./components/shared/PageTitle";
 import Input from "./components/auth/FormInput";
 import { SubmitHandler, useForm } from "react-hook-form";
 import FormError from "./components/auth/FormError";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
+import { graphql } from "../gql";
+import { CreateAccountMutation } from "../gql/graphql";
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -71,8 +73,8 @@ interface ISignUpForm {
   result?: string;
 }
 
-const CREATE_ACCOUNT_MUTATION = gql`
-  mutation (
+const CREATE_ACCOUNT_MUTATION = graphql(`
+  mutation createAccount(
     $firstName: String!
     $lastName: String!
     $username: String!
@@ -90,7 +92,7 @@ const CREATE_ACCOUNT_MUTATION = gql`
       error
     }
   }
-`;
+`);
 
 function SignUp() {
   const navigate = useNavigate();
@@ -107,10 +109,12 @@ function SignUp() {
   });
 
   // when mutation is completed
-  const onCompleted = ({ createAccount: { ok, error } }: any) => {
+  const onCompleted = ({
+    createAccount: { ok, error },
+  }: CreateAccountMutation) => {
     if (!ok) {
       return setError("result", {
-        message: error,
+        message: error || "",
       });
     }
     // if successful, navigate user to home
@@ -121,9 +125,12 @@ function SignUp() {
   };
 
   // mutation function to create account
-  const [createAccount, { loading }] = useMutation(CREATE_ACCOUNT_MUTATION, {
-    onCompleted,
-  });
+  const [createAccount, { loading }] = useMutation<CreateAccountMutation>(
+    CREATE_ACCOUNT_MUTATION,
+    {
+      onCompleted,
+    }
+  );
 
   // when form is submitted, run signup mutation
   const onSubmitValid: SubmitHandler<ISignUpForm> = () => {

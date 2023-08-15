@@ -31,7 +31,7 @@ function useUser() {
       // if the token exist but no user was found because token is faulty
       logUserOut(navigate);
     }
-  }, [data]);
+  }, [data, navigate]);
   return { data };
 }
 
