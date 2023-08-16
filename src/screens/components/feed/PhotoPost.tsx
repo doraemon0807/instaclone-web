@@ -7,15 +7,12 @@ import {
   faPaperPlane,
 } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as SolidHeart } from "@fortawesome/free-solid-svg-icons";
-import {
-  Photo,
-  ToggleLikeMutation,
-  ToggleLikeMutationVariables,
-} from "../../../gql/graphql";
+import { Photo } from "../../../gql/graphql";
 import { FatText } from "../shared/SharedStyle";
 import Avatar from "../shared/Avatar";
-import { graphql } from "../../../gql";
 import { ApolloCache, gql, useMutation } from "@apollo/client";
+import { graphql } from "../../../gql";
+import Comments from "./Comments";
 
 const PhotoContainer = styled.div`
   border-bottom: 1px solid ${(props) => props.theme.borderColor};
@@ -76,17 +73,6 @@ const Likes = styled(FatText)`
   display: block;
 `;
 
-interface IPhotoProps {
-  id: number;
-  user: {
-    username: string;
-    avatar?: string | null;
-  };
-  file: string;
-  isLiked: boolean;
-  likes: number;
-}
-
 const TOGGLE_LIKE_MUTATION = graphql(`
   mutation toggleLike($id: Int!) {
     toggleLike(id: $id) {
@@ -96,7 +82,42 @@ const TOGGLE_LIKE_MUTATION = graphql(`
   }
 `);
 
-function PhotoPost({ id, user, file, isLiked, likes }: IPhotoProps) {
+interface IPhotoProps {
+  id: number;
+  file: string;
+  caption?: string | null;
+  likes: number;
+  commentCount: number;
+  createdAt: string;
+  isMine: boolean;
+  isLiked: boolean;
+  user: {
+    id: number;
+    username: string;
+    avatar?: string | null;
+  };
+  comments?: Array<{
+    id: number;
+    payload: string;
+    isMine: boolean;
+    createdAt: string;
+    user: {
+      username: string;
+      avatar?: string | null;
+    };
+  } | null> | null;
+}
+
+function PhotoPost({
+  id,
+  user,
+  file,
+  isLiked,
+  likes,
+  caption,
+  comments,
+  commentCount,
+}: IPhotoProps) {
   const updateToggleLike = (cache: ApolloCache<Photo>, data: any) => {
     const {
       data: {
@@ -104,45 +125,30 @@ function PhotoPost({ id, user, file, isLiked, likes }: IPhotoProps) {
       },
     } = data;
 
-    console.log(data);
-
     if (ok) {
+      // modify cache fragment
       const fragmentId = `Photo:${id}`;
-      const fragment = gql`
-        fragment BSName on Photo {
-          isLiked
-          likes
-        }
-      `;
-
-      // read cache from fragment
-      const result = cache.readFragment<any>({
+      cache.modify({
         id: fragmentId,
-        fragment,
-      });
-      // if isLiked and likes info is in result
-      if ("isLiked" in result && "likes" in result) {
-        const { isLiked: cacheIsLiked, likes: cacheLikes } = result;
-        // update cache by fragments
-        cache.writeFragment({
-          id: fragmentId,
-          fragment,
-          data: {
-            isLiked: !cacheIsLiked,
-            likes: cacheIsLiked ? cacheLikes - 1 : cacheLikes + 1,
+        fields: {
+          isLiked(prev) {
+            return !prev;
           },
-        });
-      }
+          likes(prev) {
+            if (isLiked) {
+              return prev - 1;
+            }
+            return prev + 1;
+          },
+        },
+      });
     }
   };
 
-  // mutation function to toggle likes
-  const [toggleLikeMutation] = useMutation<
-    ToggleLikeMutation,
-    ToggleLikeMutationVariables
-  >(TOGGLE_LIKE_MUTATION, {
+  //mutation function to toggle likes
+  const [toggleLikeMutation] = useMutation(TOGGLE_LIKE_MUTATION, {
     variables: {
-      id,
+      id: id!,
     },
     update: updateToggleLike,
   });
@@ -150,9 +156,9 @@ function PhotoPost({ id, user, file, isLiked, likes }: IPhotoProps) {
   return (
     <PhotoContainer key={id}>
       <PhotoHeader>
-        <Avatar url={user.avatar} />
+        <Avatar url={user?.avatar} />
         <PhotoUser>
-          <Username>{user.username}</Username>
+          <Username>{user?.username}</Username>
           <Dot>•</Dot>
           <span>Date</span>
         </PhotoUser>
@@ -180,6 +186,12 @@ function PhotoPost({ id, user, file, isLiked, likes }: IPhotoProps) {
           </div>
         </PhotoActions>
         <Likes>{likes === 1 ? "1 like" : `${likes} likes`}</Likes>
+        <Comments
+          author={user.username}
+          caption={caption}
+          comments={comments}
+          commentCount={commentCount}
+        />
       </PhotoData>
     </PhotoContainer>
   );

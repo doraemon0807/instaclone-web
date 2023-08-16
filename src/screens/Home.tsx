@@ -4,8 +4,8 @@ import { useQuery } from "@apollo/client";
 import { styled } from "styled-components";
 import { graphql } from "../gql";
 import { SeeFeedQuery } from "../gql/graphql";
-import PhotoPost from "./components/feed/PhotoPost";
 import PageTitle from "./components/shared/PageTitle";
+import PhotoPost from "./components/feed/PhotoPost";
 
 const FeedContainer = styled.div`
   margin-top: 10px;
@@ -21,7 +21,7 @@ const FEED_QUERY = graphql(`
         file
         caption
         likes
-        comments
+        commentCount
         createdAt
         isMine
         isLiked
@@ -29,6 +29,16 @@ const FEED_QUERY = graphql(`
           id
           username
           avatar
+        }
+        comments {
+          id
+          payload
+          isMine
+          createdAt
+          user {
+            username
+            avatar
+          }
         }
       }
     }
