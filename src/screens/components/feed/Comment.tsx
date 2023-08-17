@@ -2,6 +2,9 @@ import { styled } from "styled-components";
 import { FatText } from "../shared/SharedStyle";
 import { Fragment } from "react";
 import { Link } from "react-router-dom";
+import { graphql } from "../../../gql";
+import { ApolloCache, DefaultContext, useMutation } from "@apollo/client";
+import { DeleteCommentMutation } from "../../../gql/graphql";
 
 const CommentContainer = styled.div`
   display: flex;
@@ -24,9 +27,70 @@ const CaptionWrapper = styled.span``;
 interface ICommentProps {
   author?: string;
   payload?: string;
+  id?: number;
+  isMine?: boolean;
+  photoId?: number;
 }
 
-function Comment({ author, payload }: ICommentProps) {
+interface IDeleteCommentUpdateProps {
+  data?: DeleteCommentMutation | null;
+}
+
+const DELETE_COMMENT_MUTATION = graphql(`
+  mutation deleteComment($id: Int!) {
+    deleteComment(id: $id) {
+      ok
+      error
+    }
+  }
+`);
+
+function CommentEntry({ author, payload, id, isMine, photoId }: ICommentProps) {
+  const deleteCommentUpdate = (
+    cache: ApolloCache<Comment>,
+    result: IDeleteCommentUpdateProps
+  ) => {
+    if (!result.data) {
+      return;
+    }
+
+    const {
+      data: {
+        deleteComment: { ok },
+      },
+    } = result;
+
+    if (ok) {
+      // delete object with id from cache
+      cache.evict({ id: `Comment:${id}` });
+
+      cache.modify({
+        id: `Photo:${photoId}`,
+        fields: {
+          commentCount(prev) {
+            return prev - 1;
+          },
+        },
+      });
+    }
+  };
+
+  // mutation function to delete comment
+  const [deleteCommentMutation] = useMutation<DeleteCommentMutation>(
+    DELETE_COMMENT_MUTATION,
+    {
+      variables: {
+        id,
+      },
+      update: deleteCommentUpdate,
+    }
+  );
+
+  // function to delete comment when button is clicked
+  const onDeleteClick = () => {
+    deleteCommentMutation();
+  };
+
   return (
     <CommentContainer>
       <FatText>{author}</FatText>
@@ -48,8 +112,9 @@ function Comment({ author, payload }: ICommentProps) {
           </CaptionWrapper>
         ))}
       </Caption>
+      {isMine ? <button onClick={onDeleteClick}>X</button> : null}
     </CommentContainer>
   );
 }
 
-export default Comment;
+export default CommentEntry;

@@ -10,7 +10,7 @@ import { faHeart as SolidHeart } from "@fortawesome/free-solid-svg-icons";
 import { Photo } from "../../../gql/graphql";
 import { FatText } from "../shared/SharedStyle";
 import Avatar from "../shared/Avatar";
-import { ApolloCache, gql, useMutation } from "@apollo/client";
+import { ApolloCache, DefaultContext, useMutation } from "@apollo/client";
 import { graphql } from "../../../gql";
 import Comments from "./Comments";
 
@@ -118,12 +118,16 @@ function PhotoPost({
   comments,
   commentCount,
 }: IPhotoProps) {
-  const updateToggleLike = (cache: ApolloCache<Photo>, data: any) => {
+  // Function to update cache data
+  const updateToggleLike = (
+    cache: ApolloCache<Photo>,
+    result: DefaultContext
+  ) => {
     const {
       data: {
         toggleLike: { ok },
       },
-    } = data;
+    } = result;
 
     if (ok) {
       // modify cache fragment
@@ -187,6 +191,7 @@ function PhotoPost({
         </PhotoActions>
         <Likes>{likes === 1 ? "1 like" : `${likes} likes`}</Likes>
         <Comments
+          photoId={id}
           author={user.username}
           caption={caption}
           comments={comments}

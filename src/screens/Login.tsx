@@ -94,9 +94,12 @@ function Login() {
   };
 
   // mutation function to log in
-  const [login, { loading }] = useMutation<LoginMutation>(LOGIN_MUTATION, {
-    onCompleted,
-  });
+  const [loginMutation, { loading }] = useMutation<LoginMutation>(
+    LOGIN_MUTATION,
+    {
+      onCompleted,
+    }
+  );
 
   // when form is submitted, run login mutation
   const onSubmitValid: SubmitHandler<ILoginForm> = () => {
@@ -104,7 +107,7 @@ function Login() {
     if (loading) {
       return;
     }
-    login({
+    loginMutation({
       variables: {
         username,
         password,
