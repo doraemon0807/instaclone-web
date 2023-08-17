@@ -19,6 +19,7 @@ const Container = styled.div`
   background-color: ${(props) => props.theme.bgColor};
   border-top: 1px solid ${(props) => props.theme.borderColor};
   color: ${(props) => props.theme.fontColor};
+  z-index: 100;
 `;
 
 const Wrapper = styled.div`

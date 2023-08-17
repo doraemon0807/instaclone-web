@@ -2,25 +2,63 @@ import { styled } from "styled-components";
 import CommentEntry from "./Comment";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { graphql } from "../../../gql";
-import { ApolloCache, DefaultContext, gql, useMutation } from "@apollo/client";
+import { ApolloCache, gql, useMutation } from "@apollo/client";
 import { Comment, CreateCommentMutation } from "../../../gql/graphql";
 import useUser from "../../hooks/useUser";
 
 const CommentsContainer = styled.div`
-  margin-top: 20px;
+  margin-top: 6px;
 `;
 
 const CommentCount = styled.span`
   opacity: 0.7;
   font-size: 14px;
-  margin: 10px 0;
+  margin: 6px 0;
   display: block;
   font-weight: 500;
 `;
 
+const CommentInputWrapper = styled.form`
+  margin-top: 10px;
+  label {
+    display: block;
+    transform: translate(0px, -16px);
+    pointer-events: none;
+    transition: all 0.05s linear;
+    color: ${(props) => props.theme.grayColor};
+  }
+  input {
+    box-sizing: border-box;
+    width: 100%;
+    transition: all 0.05s linear;
+    border-radius: 5px;
+    border: 1px solid transparent;
+
+    &:focus {
+      border: 1px solid ${(props) => props.theme.accentLight};
+    }
+
+    &:focus,
+    &:not(:placeholder-shown) {
+      padding: 20px 6px 6px 6px;
+    }
+
+    &:focus + label,
+    &:not(:placeholder-shown) + label {
+      transform: translate(6px, -38px);
+      font-size: 10px;
+      transform-origin: top left;
+    }
+  }
+`;
+
 interface ICommentProps {
   photoId: number;
-  author: string;
+  author: {
+    id: number;
+    username: string;
+    avatar?: string | null;
+  };
   caption?: string | null;
   comments?: Array<{
     id: number;
@@ -28,16 +66,12 @@ interface ICommentProps {
     isMine: boolean;
     createdAt: string;
     user: {
+      id: number;
       username: string;
       avatar?: string | null;
     };
   } | null> | null;
   commentCount: number;
-}
-
-interface ICommentForm {
-  payload: string;
-  results?: string;
 }
 
 interface ICommentForm {
@@ -144,7 +178,7 @@ function Comments({
     });
 
   // when form is submitted, run createComment mutation
-  const onSubmitValid: SubmitHandler<ICommentForm> = (data) => {
+  const onSubmitValid: SubmitHandler<ICommentForm> = async (data) => {
     if (loading) {
       return;
     }
@@ -167,22 +201,23 @@ function Comments({
         <CommentEntry
           key={comment?.id}
           id={comment?.id}
-          author={comment?.user?.username}
+          author={comment?.user}
           payload={comment?.payload}
           isMine={comment?.isMine}
           photoId={photoId}
         />
       ))}
       <div>
-        <form onSubmit={handleSubmit(onSubmitValid)}>
+        <CommentInputWrapper onSubmit={handleSubmit(onSubmitValid)}>
           <input
             {...register("payload", {
               required: "This field is required.",
             })}
             type="text"
-            placeholder="Write your comment..."
+            placeholder=""
           />
-        </form>
+          <label htmlFor="payload">Write your comment...</label>
+        </CommentInputWrapper>
       </div>
     </CommentsContainer>
   );

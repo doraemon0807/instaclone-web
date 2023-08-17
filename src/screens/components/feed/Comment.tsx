@@ -1,17 +1,41 @@
-import { styled } from "styled-components";
+import { css, styled } from "styled-components";
 import { FatText } from "../shared/SharedStyle";
 import { Fragment } from "react";
 import { Link } from "react-router-dom";
 import { graphql } from "../../../gql";
-import { ApolloCache, DefaultContext, useMutation } from "@apollo/client";
+import { ApolloCache, useMutation } from "@apollo/client";
 import { DeleteCommentMutation } from "../../../gql/graphql";
+import Avatar from "../shared/Avatar";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
 
 const CommentContainer = styled.div`
   display: flex;
+  justify-content: space-between;
+  padding: 4px 0px;
+  position: relative;
+  margin-top: 6px;
 `;
+
+const CommentWrapper = styled.div`
+  display: flex;
+`;
+
+const CommentText = styled.div`
+  display: inline;
+  box-sizing: border-box;
+  align-self: center;
+  margin-left: 6px;
+`;
+
+const Author = styled(FatText)``;
 
 const Caption = styled.span`
   margin-left: 6px;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 16px;
   a {
     background-color: inherit;
     color: ${(props) => props.theme.accentNormal};
@@ -24,12 +48,26 @@ const Caption = styled.span`
 
 const CaptionWrapper = styled.span``;
 
+const CommentDelete = styled.div`
+  place-self: center;
+  color: ${(props) => props.theme.grayColor};
+  cursor: pointer;
+  &:hover {
+    color: ${(props) => props.theme.fontColor};
+  }
+`;
+
 interface ICommentProps {
-  author?: string;
+  author?: {
+    id: number;
+    username: string;
+    avatar?: string | null;
+  };
   payload?: string;
   id?: number;
   isMine?: boolean;
   photoId?: number;
+  caption?: boolean;
 }
 
 interface IDeleteCommentUpdateProps {
@@ -93,26 +131,37 @@ function CommentEntry({ author, payload, id, isMine, photoId }: ICommentProps) {
 
   return (
     <CommentContainer>
-      <FatText>{author}</FatText>
-      <Caption>
-        {payload?.split(" ").map((word, idx, arr) => (
-          <CaptionWrapper key={idx}>
-            {/#[\w]+/.test(word) ? (
-              <Fragment>
-                <Link to={`/hashtags/${word.replace("#", "")}`}>{word}</Link>
-              </Fragment>
-            ) : /@[\w]+/.test(word) ? (
-              <Fragment>
-                <Link to={`/user/${word.replace("@", "")}`}>{word}</Link>
-              </Fragment>
-            ) : (
-              <Fragment>{word}</Fragment>
-            )}
-            {idx !== arr.length && " "}
-          </CaptionWrapper>
-        ))}
-      </Caption>
-      {isMine ? <button onClick={onDeleteClick}>X</button> : null}
+      <CommentWrapper>
+        <Avatar url={author?.avatar} size="small" />
+        <CommentText>
+          <Author>{author?.username}</Author>
+          <Caption>
+            {payload?.split(" ").map((word, idx, arr) => (
+              <CaptionWrapper key={idx}>
+                {/#[\w]+/.test(word) ? (
+                  <Fragment>
+                    <Link to={`/hashtags/${word.replace("#", "")}`}>
+                      {word}
+                    </Link>
+                  </Fragment>
+                ) : /@[\w]+/.test(word) ? (
+                  <Fragment>
+                    <Link to={`/user/${word.replace("@", "")}`}>{word}</Link>
+                  </Fragment>
+                ) : (
+                  <Fragment>{word}</Fragment>
+                )}
+                {idx !== arr.length && " "}
+              </CaptionWrapper>
+            ))}
+          </Caption>
+        </CommentText>
+      </CommentWrapper>
+      {isMine ? (
+        <CommentDelete onClick={onDeleteClick}>
+          <FontAwesomeIcon icon={faTrashCan} />
+        </CommentDelete>
+      ) : null}
     </CommentContainer>
   );
 }

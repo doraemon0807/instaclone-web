@@ -102,6 +102,7 @@ interface IPhotoProps {
     isMine: boolean;
     createdAt: string;
     user: {
+      id: number;
       username: string;
       avatar?: string | null;
     };
@@ -192,7 +193,7 @@ function PhotoPost({
         <Likes>{likes === 1 ? "1 like" : `${likes} likes`}</Likes>
         <Comments
           photoId={id}
-          author={user.username}
+          author={user}
           caption={caption}
           comments={comments}
           commentCount={commentCount}

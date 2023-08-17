@@ -36,6 +36,7 @@ const FEED_QUERY = graphql(`
           isMine
           createdAt
           user {
+            id
             username
             avatar
           }

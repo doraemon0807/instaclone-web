@@ -8,15 +8,21 @@ const SAvatar = styled.div<{ size?: string }>`
       ? css`
           width: 26px;
           height: 26px;
+          min-width: 26px;
+          min-height: 26px;
         `
       : props.size === "large"
       ? css`
           width: 46px;
           height: 46px;
+          min-width: 46px;
+          min-height: 46px;
         `
       : css`
           width: 36px;
           height: 36px;
+          min-width: 36px;
+          min-height: 36px;
         `}
   border-radius: 50%;
   overflow: hidden;
@@ -29,8 +35,35 @@ const Img = styled.img`
   max-width: 100%;
 `;
 
-const Icon = styled.div`
+const Icon = styled.div<{ size?: string }>`
   color: ${(props) => props.theme.borderColor};
+
+  ${(props) =>
+    props.size === "small"
+      ? css`
+          width: 26px;
+          height: 26px;
+          min-width: 26px;
+          min-height: 26px;
+        `
+      : props.size === "large"
+      ? css`
+          width: 46px;
+          height: 46px;
+          min-width: 46px;
+          min-height: 46px;
+        `
+      : css`
+          width: 36px;
+          height: 36px;
+          min-width: 36px;
+          min-height: 36px;
+        `}
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 interface IAvatarProps {
@@ -44,7 +77,7 @@ function Avatar({ url = "", size }: IAvatarProps) {
       {url ? (
         <Img src={url} />
       ) : (
-        <Icon>
+        <Icon size={size}>
           <FontAwesomeIcon size="xl" icon={faUserCircle} />
         </Icon>
       )}
