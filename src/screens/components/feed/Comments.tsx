@@ -172,10 +172,12 @@ function Comments({
   };
 
   // mutation function to create new comment
-  const [createCommentMutation, { loading }] =
-    useMutation<CreateCommentMutation>(CREATE_COMMENT_MUTATION, {
+  const [createCommentMutation, { loading }] = useMutation(
+    CREATE_COMMENT_MUTATION,
+    {
       update: createCommentUpdate,
-    });
+    }
+  );
 
   // when form is submitted, run createComment mutation
   const onSubmitValid: SubmitHandler<ICommentForm> = async (data) => {
@@ -213,6 +215,7 @@ function Comments({
             {...register("payload", {
               required: "This field is required.",
             })}
+            id="payload"
             type="text"
             placeholder=""
           />

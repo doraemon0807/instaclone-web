@@ -1,20 +1,18 @@
-import { gql, useQuery, useReactiveVar } from "@apollo/client";
+import { useQuery, useReactiveVar } from "@apollo/client";
 import { isLoggedInVar, logUserOut } from "../../apollo";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { MeQuery } from "../../gql/graphql";
+import { graphql } from "../../gql";
 
-const ME_QUERY = gql`
+const ME_QUERY = graphql(`
   query me {
     me {
       profile {
-        id
-        username
-        avatar
+        ...UserFragment
       }
     }
   }
-`;
+`);
 
 // function to check if user's token is valid
 function useUser() {
@@ -23,7 +21,7 @@ function useUser() {
   // check if token exists in local storage
   const hasToken = useReactiveVar(isLoggedInVar);
   // query function to fetch currently logged in user data
-  const { data } = useQuery<MeQuery>(ME_QUERY, {
+  const { data } = useQuery(ME_QUERY, {
     skip: !hasToken, // skip if user doesn't have a token
   });
 

@@ -94,12 +94,9 @@ function Login() {
   };
 
   // mutation function to log in
-  const [loginMutation, { loading }] = useMutation<LoginMutation>(
-    LOGIN_MUTATION,
-    {
-      onCompleted,
-    }
-  );
+  const [loginMutation, { loading }] = useMutation(LOGIN_MUTATION, {
+    onCompleted,
+  });
 
   // when form is submitted, run login mutation
   const onSubmitValid: SubmitHandler<ILoginForm> = () => {
@@ -137,7 +134,7 @@ function Login() {
             })}
             type="text"
             placeholder="Username, or email"
-            hasError={Boolean(errors?.username?.message)}
+            $hasError={Boolean(errors?.username?.message)}
           />
           <FormError message={errors?.username?.message} />
           <Input
@@ -146,7 +143,7 @@ function Login() {
             })}
             type="password"
             placeholder="Password"
-            hasError={Boolean(errors?.password?.message)}
+            $hasError={Boolean(errors?.password?.message)}
           />
           <FormError message={errors?.password?.message} />
           <FormError message={errors?.result?.message} />

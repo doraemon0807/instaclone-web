@@ -13,6 +13,7 @@ import Avatar from "../shared/Avatar";
 import { ApolloCache, DefaultContext, useMutation } from "@apollo/client";
 import { graphql } from "../../../gql";
 import Comments from "./Comments";
+import { Link } from "react-router-dom";
 
 const PhotoContainer = styled.div`
   border-bottom: 1px solid ${(props) => props.theme.borderColor};
@@ -151,19 +152,32 @@ function PhotoPost({
   };
 
   //mutation function to toggle likes
-  const [toggleLikeMutation] = useMutation(TOGGLE_LIKE_MUTATION, {
-    variables: {
-      id: id!,
-    },
+  const [toggleLikeMutation, { loading }] = useMutation(TOGGLE_LIKE_MUTATION, {
     update: updateToggleLike,
   });
+
+  //function to call when like button is clicked
+  const onLikeClick = () => {
+    if (loading) {
+      return;
+    }
+    toggleLikeMutation({
+      variables: {
+        id,
+      },
+    });
+  };
 
   return (
     <PhotoContainer key={id}>
       <PhotoHeader>
-        <Avatar url={user?.avatar} />
+        <Link to={`/profile/${user?.username}`}>
+          <Avatar url={user?.avatar} />
+        </Link>
         <PhotoUser>
-          <Username>{user?.username}</Username>
+          <Link to={`/profile/${user?.username}`}>
+            <Username>{user?.username}</Username>
+          </Link>
           <Dot>•</Dot>
           <span>Date</span>
         </PhotoUser>
@@ -172,7 +186,7 @@ function PhotoPost({
       <PhotoData>
         <PhotoActions>
           <div>
-            <PhotoAction onClick={() => toggleLikeMutation()}>
+            <PhotoAction onClick={onLikeClick}>
               <FontAwesomeIcon
                 style={{ color: isLiked ? "tomato" : "inherit" }}
                 size="xl"

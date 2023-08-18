@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { styled } from "styled-components";
 import { graphql } from "../gql";
-import { SeeFeedQuery } from "../gql/graphql";
 import PageTitle from "./components/shared/PageTitle";
 import PhotoPost from "./components/feed/PhotoPost";
 
@@ -17,29 +16,12 @@ const FEED_QUERY = graphql(`
       ok
       error
       photos {
-        id
-        file
-        caption
-        likes
-        commentCount
-        createdAt
-        isMine
-        isLiked
+        ...PhotoFragment
         user {
-          id
-          username
-          avatar
+          ...UserFragment
         }
         comments {
-          id
-          payload
-          isMine
-          createdAt
-          user {
-            id
-            username
-            avatar
-          }
+          ...CommentFragment
         }
       }
     }
@@ -49,7 +31,7 @@ const FEED_QUERY = graphql(`
 function Home() {
   const navigate = useNavigate();
 
-  const { data } = useQuery<SeeFeedQuery>(FEED_QUERY);
+  const { data } = useQuery(FEED_QUERY);
 
   return (
     <FeedContainer>

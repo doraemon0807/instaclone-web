@@ -1,4 +1,4 @@
-import { css, styled } from "styled-components";
+import { styled } from "styled-components";
 import { FatText } from "../shared/SharedStyle";
 import { Fragment } from "react";
 import { Link } from "react-router-dom";
@@ -49,6 +49,7 @@ const Caption = styled.span`
 const CaptionWrapper = styled.span``;
 
 const CommentDelete = styled.div`
+  margin-left: 6px;
   place-self: center;
   color: ${(props) => props.theme.grayColor};
   cursor: pointer;
@@ -114,15 +115,12 @@ function CommentEntry({ author, payload, id, isMine, photoId }: ICommentProps) {
   };
 
   // mutation function to delete comment
-  const [deleteCommentMutation] = useMutation<DeleteCommentMutation>(
-    DELETE_COMMENT_MUTATION,
-    {
-      variables: {
-        id,
-      },
-      update: deleteCommentUpdate,
-    }
-  );
+  const [deleteCommentMutation] = useMutation(DELETE_COMMENT_MUTATION, {
+    variables: {
+      id: id!,
+    },
+    update: deleteCommentUpdate,
+  });
 
   // function to delete comment when button is clicked
   const onDeleteClick = () => {
@@ -132,9 +130,13 @@ function CommentEntry({ author, payload, id, isMine, photoId }: ICommentProps) {
   return (
     <CommentContainer>
       <CommentWrapper>
-        <Avatar url={author?.avatar} size="small" />
+        <Link to={`/profile/${author?.username}`}>
+          <Avatar url={author?.avatar} size="small" />
+        </Link>
         <CommentText>
-          <Author>{author?.username}</Author>
+          <Link to={`/profile/${author?.username}`}>
+            <Author>{author?.username}</Author>
+          </Link>
           <Caption>
             {payload?.split(" ").map((word, idx, arr) => (
               <CaptionWrapper key={idx}>
@@ -146,7 +148,7 @@ function CommentEntry({ author, payload, id, isMine, photoId }: ICommentProps) {
                   </Fragment>
                 ) : /@[\w]+/.test(word) ? (
                   <Fragment>
-                    <Link to={`/user/${word.replace("@", "")}`}>{word}</Link>
+                    <Link to={`/profile/${word.replace("@", "")}`}>{word}</Link>
                   </Fragment>
                 ) : (
                   <Fragment>{word}</Fragment>

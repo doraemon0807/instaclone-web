@@ -3,6 +3,7 @@ import { styled } from "styled-components";
 import { isLoggedInVar } from "../../apollo";
 import useUser from "../hooks/useUser";
 import Avatar from "./shared/Avatar";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   max-width: 770px;
@@ -51,11 +52,13 @@ function NavBar() {
           <span>Reels</span>
           <span>Post</span>
           <span>Inbox</span>
-          {isLoggedIn ? (
-            <Avatar url={data?.me?.profile?.avatar} size="small" />
-          ) : (
-            <Avatar url="" />
-          )}
+          <Link to={`/users/${data?.me.profile?.username}`}>
+            {isLoggedIn ? (
+              <Avatar url={data?.me?.profile?.avatar} size="small" />
+            ) : (
+              <Avatar url="" />
+            )}
+          </Link>
         </Icons>
       </Wrapper>
     </Container>

@@ -125,12 +125,9 @@ function SignUp() {
   };
 
   // mutation function to create account
-  const [createAccount, { loading }] = useMutation<CreateAccountMutation>(
-    CREATE_ACCOUNT_MUTATION,
-    {
-      onCompleted,
-    }
-  );
+  const [createAccount, { loading }] = useMutation(CREATE_ACCOUNT_MUTATION, {
+    onCompleted,
+  });
 
   // when form is submitted, run signup mutation
   const onSubmitValid: SubmitHandler<ISignUpForm> = () => {
