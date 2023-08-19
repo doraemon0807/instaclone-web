@@ -30,7 +30,7 @@ const PhotoHeader = styled.div`
 
 const PhotoUser = styled.div`
   display: flex;
-  color: ${(props) => props.theme.grayColor};
+  color: ${(props) => props.theme.grayNormal};
 `;
 
 const Username = styled(FatText)`

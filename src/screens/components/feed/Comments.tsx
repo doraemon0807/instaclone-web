@@ -25,7 +25,7 @@ const CommentInputWrapper = styled.form`
     transform: translate(0px, -16px);
     pointer-events: none;
     transition: all 0.05s linear;
-    color: ${(props) => props.theme.grayColor};
+    color: ${(props) => props.theme.grayNormal};
   }
   input {
     box-sizing: border-box;

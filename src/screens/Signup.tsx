@@ -35,7 +35,7 @@ const Title = styled.h1`
 
 const Subtitle = styled.span`
   font-weight: 600;
-  color: ${(props) => props.theme.grayColor};
+  color: ${(props) => props.theme.grayNormal};
   font-size: 18px;
   line-height: 24px;
   text-align: center;
@@ -51,7 +51,7 @@ const ToC = styled.div`
   flex-direction: column;
   span {
     font-size: 12px;
-    color: ${(props) => props.theme.grayColor};
+    color: ${(props) => props.theme.grayNormal};
     text-align: center;
     line-height: 16px;
     letter-spacing: 0.2px;

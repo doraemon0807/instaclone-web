@@ -52,9 +52,9 @@ function NavBar() {
           <span>Reels</span>
           <span>Post</span>
           <span>Inbox</span>
-          <Link to={`/users/${data?.me.profile?.username}`}>
+          <Link to={`/profile/${data?.me.profile?.username}`}>
             {isLoggedIn ? (
-              <Avatar url={data?.me?.profile?.avatar} size="small" />
+              <Avatar url={data?.me?.profile?.avatar} size="sm" />
             ) : (
               <Avatar url="" />
             )}

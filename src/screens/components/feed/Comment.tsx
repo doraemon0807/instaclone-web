@@ -51,7 +51,7 @@ const CaptionWrapper = styled.span``;
 const CommentDelete = styled.div`
   margin-left: 6px;
   place-self: center;
-  color: ${(props) => props.theme.grayColor};
+  color: ${(props) => props.theme.grayNormal};
   cursor: pointer;
   &:hover {
     color: ${(props) => props.theme.fontColor};
@@ -131,7 +131,7 @@ function CommentEntry({ author, payload, id, isMine, photoId }: ICommentProps) {
     <CommentContainer>
       <CommentWrapper>
         <Link to={`/profile/${author?.username}`}>
-          <Avatar url={author?.avatar} size="small" />
+          <Avatar url={author?.avatar} size="sm" />
         </Link>
         <CommentText>
           <Link to={`/profile/${author?.username}`}>

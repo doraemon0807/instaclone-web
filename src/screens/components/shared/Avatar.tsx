@@ -4,19 +4,26 @@ import { css, styled } from "styled-components";
 
 const SAvatar = styled.div<{ size?: string }>`
   ${(props) =>
-    props.size === "small"
+    props.size === "sm"
       ? css`
           width: 26px;
           height: 26px;
           min-width: 26px;
           min-height: 26px;
         `
-      : props.size === "large"
+      : props.size === "lg"
       ? css`
-          width: 46px;
-          height: 46px;
-          min-width: 46px;
-          min-height: 46px;
+          width: 80px;
+          height: 80px;
+          min-width: 80px;
+          min-height: 80px;
+        `
+      : props.size === "xl"
+      ? css`
+          width: 150px;
+          height: 150px;
+          min-width: 150px;
+          min-height: 150px;
         `
       : css`
           width: 36px;
@@ -39,19 +46,26 @@ const Icon = styled.div<{ size?: string }>`
   color: ${(props) => props.theme.borderColor};
 
   ${(props) =>
-    props.size === "small"
+    props.size === "sm"
       ? css`
           width: 26px;
           height: 26px;
           min-width: 26px;
           min-height: 26px;
         `
-      : props.size === "large"
+      : props.size === "lg"
       ? css`
-          width: 46px;
-          height: 46px;
-          min-width: 46px;
-          min-height: 46px;
+          width: 80px;
+          height: 80px;
+          min-width: 80px;
+          min-height: 80px;
+        `
+      : props.size === "xl"
+      ? css`
+          width: 150px;
+          height: 150px;
+          min-width: 150px;
+          min-height: 150px;
         `
       : css`
           width: 36px;
@@ -68,7 +82,7 @@ const Icon = styled.div<{ size?: string }>`
 
 interface IAvatarProps {
   url?: string | null;
-  size?: "small" | "large";
+  size?: "sm" | "lg" | "xl";
 }
 
 function Avatar({ url = "", size }: IAvatarProps) {

@@ -6,12 +6,14 @@ export const BaseBox = styled.div`
   width: 100%;
 `;
 
-export const Button = styled.div`
+export const Button = styled.div<{ accent?: boolean }>`
   margin: 15px 0px;
   padding: 4px 0px;
-  background-color: ${(props) => props.theme.accentNormal};
+  background-color: ${(props) =>
+    props.accent ? props.theme.accentNormal : props.theme.borderColor};
   text-align: center;
-  color: white;
+  color: ${(props) =>
+    props.accent ? props.theme.bgColor : props.theme.fontColor};
   font-weight: 500;
   border-radius: 5px;
   width: 100%;

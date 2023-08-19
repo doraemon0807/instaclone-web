@@ -8,8 +8,10 @@ export const lightTheme: DefaultTheme = {
   accentLight: "#4cb5f9",
   accentNormal: "#0095f6",
   accentDark: "#00376b",
-  borderColor: "rgb(219,219,219)",
-  grayColor: "#737373",
+  borderColor: "rgb(229,229,229)",
+  grayLight: "#efefef",
+  grayNormal: "#737373",
+  grayDark: "#a2a2a2",
 };
 
 export const darkTheme: DefaultTheme = {
@@ -18,8 +20,10 @@ export const darkTheme: DefaultTheme = {
   accentLight: "#00376b",
   accentNormal: "#0095f6",
   accentDark: "#4cb5f9",
-  borderColor: "rgb(219,219,219)",
-  grayColor: "#737373",
+  borderColor: "rgb(229,229,229)",
+  grayLight: "#a2a2a2",
+  grayNormal: "#737373",
+  grayDark: "#efefef",
 };
 
 export const GlobalStyle = createGlobalStyle`
