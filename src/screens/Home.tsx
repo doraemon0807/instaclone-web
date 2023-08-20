@@ -1,5 +1,3 @@
-import { useNavigate } from "react-router-dom";
-// import { logUserOut } from "../apollo";
 import { useQuery } from "@apollo/client";
 import { styled } from "styled-components";
 import { graphql } from "../gql";
@@ -29,8 +27,6 @@ const FEED_QUERY = graphql(`
 `);
 
 function Home() {
-  const navigate = useNavigate();
-
   const { data } = useQuery(FEED_QUERY);
 
   return (
@@ -39,7 +35,6 @@ function Home() {
       {data?.seeFeed?.photos?.map(
         (photo) => photo && <PhotoPost key={photo.id} {...photo} />
       )}
-      {/* <button onClick={() => logUserOut(navigate)}>Logout Now</button> */}
     </FeedContainer>
   );
 }

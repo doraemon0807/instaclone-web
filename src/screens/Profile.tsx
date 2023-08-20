@@ -1,12 +1,23 @@
 import { useParams } from "react-router-dom";
 import { graphql } from "../gql";
-import { useQuery } from "@apollo/client";
+import {
+  ApolloCache,
+  useApolloClient,
+  useMutation,
+  useQuery,
+} from "@apollo/client";
 import { styled } from "styled-components";
 import Avatar from "./components/shared/Avatar";
 import { useState } from "react";
-import { Button } from "./components/shared/SharedStyle";
 import Separator from "./components/shared/Separator";
 import PhotoGallery from "./components/profile/PhotoGallery";
+import { useNavigate } from "react-router-dom";
+import { logUserOut } from "../apollo";
+import FollowButton from "./components/profile/FollowButtton";
+import { Button } from "./components/shared/SharedStyle";
+import PageTitle from "./components/shared/PageTitle";
+import { SeeProfileQuery, UnfollowUserMutation, User } from "../gql/graphql";
+import useUser from "./hooks/useUser";
 
 const Container = styled.div`
   margin-top: 5px;
@@ -89,18 +100,22 @@ const PhotoHeader = styled.div`
   justify-content: space-evenly;
 `;
 
-const PhotoMode = styled.div<{ active: boolean }>`
+const PhotoMode = styled.div<{ $active: boolean }>`
   width: 100%;
   display: flex;
   justify-content: center;
   padding: 16px 0px;
   border-top: 1px solid
-    ${(props) => (props.active ? props.theme.fontColor : "transparent")};
+    ${(props) => (props.$active ? props.theme.fontColor : "transparent")};
 `;
 const PhotoWrapper = styled.div``;
 
 interface IProfileParams {
   username: string;
+}
+
+interface IUnfollowUserUpdateProps {
+  data?: UnfollowUserMutation | null;
 }
 
 export type IPostModeParams = "posts" | "saved" | "tagged";
@@ -136,18 +151,170 @@ const SEE_PROFILE_QUERY = graphql(`
   }
 `);
 
+const FOLLOW_USER_MUTATION = graphql(`
+  mutation unfollowUser($username: String!) {
+    unfollowUser(username: $username) {
+      ok
+      error
+    }
+  }
+`);
+
+const UNFOLLOW_USER_MUTATION = graphql(`
+  mutation followUser($username: String!) {
+    followUser(username: $username) {
+      ok
+      error
+    }
+  }
+`);
+
 function Profile() {
+  //grab username of the current profile from params
   const { username } = useParams<Readonly<IProfileParams>>();
-  const { data } = useQuery(SEE_PROFILE_QUERY, {
+
+  //grab userData of logged in user
+  const { data: userData } = useUser();
+
+  //Apollo client allows you to access cache
+  const client = useApolloClient();
+
+  //query function to fetch profile info
+  const { data, loading } = useQuery(SEE_PROFILE_QUERY, {
     variables: {
       username: username!,
     },
   });
 
+  //function to update followUser cache
+  //method 1: update
+  const followUserUpdate = (
+    cache: ApolloCache<User>,
+    result: IUnfollowUserUpdateProps
+  ) => {
+    if (!result.data) {
+      return;
+    }
+    const {
+      data: {
+        unfollowUser: { ok },
+      },
+    } = result;
+    if (!ok) {
+      return;
+    }
+    //modify cache of the profile user
+    cache.modify({
+      id: `User:${username}`,
+      fields: {
+        isFollowing(prev) {
+          return true;
+        },
+        totalFollowers(prev) {
+          return prev + 1;
+        },
+      },
+    });
+
+    //modify cache of the logged in user
+    if (!userData?.me.profile) {
+      return;
+    }
+    const {
+      me: {
+        profile: { username: myUsername },
+      },
+    } = userData;
+
+    cache.modify({
+      id: `User:${myUsername}`,
+      fields: {
+        totalFollowing(prev) {
+          return prev + 1;
+        },
+      },
+    });
+  };
+
+  // mutation function for following user
+  const [followUser] = useMutation(FOLLOW_USER_MUTATION, {
+    variables: {
+      username: username!,
+    },
+    update: followUserUpdate,
+  });
+
+  //function to update unfollowUser cache
+  //method 2: onCompleted + Apollo client
+  const unfollowUserCompleted = (data: any) => {
+    const {
+      followUser: { ok },
+    } = data;
+    if (!ok) {
+      return;
+    }
+    const { cache } = client;
+
+    cache.modify({
+      id: `User:${username}`,
+      fields: {
+        isFollowing(prev) {
+          return false;
+        },
+        totalFollowers(prev) {
+          return prev - 1;
+        },
+      },
+    });
+    //modify cache of the logged in user
+    if (!userData?.me.profile) {
+      return;
+    }
+    const {
+      me: {
+        profile: { username: myUsername },
+      },
+    } = userData;
+
+    cache.modify({
+      id: `User:${myUsername}`,
+      fields: {
+        totalFollowing(prev) {
+          return prev - 1;
+        },
+      },
+    });
+  };
+  // mutation function for unfollowing user
+  const [unfollowUser] = useMutation(UNFOLLOW_USER_MUTATION, {
+    variables: {
+      username: username!,
+    },
+    onCompleted: unfollowUserCompleted,
+  });
+
+  const onFollowClick = () => {
+    unfollowUser();
+  };
+
+  const onUnfollowClick = () => {
+    followUser();
+  };
+
+  //states to change modes for photo gallery
   const [postMode, setPostMode] = useState<IPostModeParams>("posts");
+
+  const navigate = useNavigate();
 
   return (
     <Container>
+      <PageTitle
+        title={
+          loading
+            ? "Loading..."
+            : `${data?.seeProfile.profile?.username}'s Profile`
+        }
+      />
       <ProfileContainer>
         <ProfileHeader>
           <ProfileAvatar>
@@ -159,11 +326,17 @@ function Profile() {
               {data?.seeProfile.profile?.isMe ? (
                 <ProfileActions>
                   <Button>Edit Profile</Button>
-                  <Button>Log Out</Button>
+                  <Button onClick={() => logUserOut(navigate)}>Log Out</Button>
                 </ProfileActions>
               ) : (
                 <ProfileActions>
-                  <Button accent>Follow</Button>
+                  {data?.seeProfile.profile?.isFollowing ? (
+                    <Button onClick={onFollowClick}>Followed</Button>
+                  ) : (
+                    <Button $accent onClick={onUnfollowClick}>
+                      Follow
+                    </Button>
+                  )}
                   <Button>Message</Button>
                 </ProfileActions>
               )}
@@ -221,21 +394,21 @@ function Profile() {
       <PhotoContainer>
         <PhotoHeader>
           <PhotoMode
-            active={postMode === "posts"}
+            $active={postMode === "posts"}
             onClick={() => setPostMode("posts")}
           >
             Posts
           </PhotoMode>
           {data?.seeProfile.profile?.isMe && (
             <PhotoMode
-              active={postMode === "saved"}
+              $active={postMode === "saved"}
               onClick={() => setPostMode("saved")}
             >
               Saved
             </PhotoMode>
           )}
           <PhotoMode
-            active={postMode === "tagged"}
+            $active={postMode === "tagged"}
             onClick={() => setPostMode("tagged")}
           >
             Tagged

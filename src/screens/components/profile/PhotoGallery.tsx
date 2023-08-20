@@ -1,6 +1,7 @@
 import { styled } from "styled-components";
 import { IPostModeParams } from "../../Profile";
-import { isNullableType } from "graphql";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart, faMessage } from "@fortawesome/free-solid-svg-icons";
 
 const PhotoGrid = styled.div`
   display: grid;
@@ -8,8 +9,42 @@ const PhotoGrid = styled.div`
   gap: 4px;
 `;
 
-const PhotoItem = styled.img`
+const PhotoContainer = styled.div<{ $bg?: string }>`
   width: 100%;
+  aspect-ratio: 1;
+  background-image: url(${(props) => props.$bg});
+  background-size: cover;
+  position: relative;
+`;
+
+const PhotoIcons = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  transition: all 0.1s ease-in-out;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  &:hover > * {
+    opacity: 1;
+  }
+`;
+
+const PhotoIcon = styled.div`
+  transition: all 0.1s ease-in-out;
+  color: ${(props) => props.theme.grayLight};
+  opacity: 0;
+  span {
+    margin-left: 5px;
+  }
+`;
+
+const PhotoEmptyBox = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 interface IPhotoGalleryProps {
@@ -32,20 +67,33 @@ function PhotoGallery({ mode, isMe, photos }: IPhotoGalleryProps) {
   return (
     <PhotoGrid>
       {photos.length > 0 ? (
-        photos.map((photo) => <PhotoItem key={photo?.id} src={photo?.file} />)
+        photos.map((photo) => (
+          <PhotoContainer key={photo?.id} $bg={photo?.file}>
+            <PhotoIcons>
+              <PhotoIcon>
+                <FontAwesomeIcon icon={faHeart} />
+                <span>{photo?.likes}</span>
+              </PhotoIcon>
+              <PhotoIcon>
+                <FontAwesomeIcon icon={faMessage} />
+                <span>{photo?.commentCount}</span>
+              </PhotoIcon>
+            </PhotoIcons>
+          </PhotoContainer>
+        ))
       ) : mode === "posts" ? (
         isMe ? (
-          <>Post + Me</>
+          <PhotoEmptyBox>Post + Me</PhotoEmptyBox>
         ) : (
-          <>Post + not me</>
+          <PhotoEmptyBox>Post + not me</PhotoEmptyBox>
         )
       ) : mode === "saved" ? (
-        <>Saved + me</>
+        <PhotoEmptyBox>Saved + me</PhotoEmptyBox>
       ) : mode === "tagged" ? (
         isMe ? (
-          <>Tagged + Me</>
+          <PhotoEmptyBox>Tagged + Me</PhotoEmptyBox>
         ) : (
-          <>Tagged + not me</>
+          <PhotoEmptyBox>Tagged + not me</PhotoEmptyBox>
         )
       ) : null}
     </PhotoGrid>

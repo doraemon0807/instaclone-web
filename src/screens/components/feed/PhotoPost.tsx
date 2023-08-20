@@ -7,10 +7,10 @@ import {
   faPaperPlane,
 } from "@fortawesome/free-regular-svg-icons";
 import { faHeart as SolidHeart } from "@fortawesome/free-solid-svg-icons";
-import { Photo } from "../../../gql/graphql";
+import { Photo, ToggleLikeMutation } from "../../../gql/graphql";
 import { FatText } from "../shared/SharedStyle";
 import Avatar from "../shared/Avatar";
-import { ApolloCache, DefaultContext, useMutation } from "@apollo/client";
+import { ApolloCache, useMutation } from "@apollo/client";
 import { graphql } from "../../../gql";
 import Comments from "./Comments";
 import { Link } from "react-router-dom";
@@ -110,6 +110,10 @@ interface IPhotoProps {
   } | null> | null;
 }
 
+interface IUpdateToggleLikeProps {
+  data?: ToggleLikeMutation | null;
+}
+
 function PhotoPost({
   id,
   user,
@@ -123,8 +127,11 @@ function PhotoPost({
   // Function to update cache data
   const updateToggleLike = (
     cache: ApolloCache<Photo>,
-    result: DefaultContext
+    result: IUpdateToggleLikeProps
   ) => {
+    if (!result.data) {
+      return;
+    }
     const {
       data: {
         toggleLike: { ok },

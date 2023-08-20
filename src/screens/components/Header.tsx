@@ -34,6 +34,14 @@ const Wrapper = styled.div`
   }
 `;
 
+const Title = styled.h1`
+  font-weight: 600;
+  font-size: 24px;
+  letter-spacing: -1px;
+  font-family: "Dancing Script";
+  color: ${(props) => props.theme.fontColor};
+`;
+
 const Button = styled.span`
   background-color: ${(props) => props.theme.accentNormal};
   border-radius: 4px;
@@ -49,7 +57,9 @@ function Header() {
     <Container>
       <Wrapper>
         <div>
-          <h1>Outstagram</h1>
+          <Link to={routes.home}>
+            <Title>Outstagram</Title>
+          </Link>
         </div>
         {isLoggedIn ? (
           <>

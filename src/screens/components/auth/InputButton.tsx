@@ -1,20 +1,16 @@
 import { styled } from "styled-components";
+import { Button } from "../shared/SharedStyle";
 
-const SInputButton = styled.input`
-  margin: 15px 0px;
-  padding: 8px 0px;
-  background-color: ${(props) => props.theme.accentNormal};
-  text-align: center;
-  color: white;
-  font-weight: 500;
-  border-radius: 5px;
-  width: 100%;
+const SInputButton = styled(Button).attrs({
+  as: "input",
+})`
   cursor: ${(props) => (props.disabled ? "auto" : "pointer")};
   opacity: ${(props) => (props.disabled ? "0.5" : "1")};
+  margin: 15px 0px;
 `;
 
 function InputButton(props: React.InputHTMLAttributes<HTMLInputElement>) {
-  return <SInputButton {...props} />;
+  return <SInputButton $accent {...props} />;
 }
 
 export default InputButton;
