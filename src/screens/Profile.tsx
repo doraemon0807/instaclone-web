@@ -13,10 +13,9 @@ import Separator from "./components/shared/Separator";
 import PhotoGallery from "./components/profile/PhotoGallery";
 import { useNavigate } from "react-router-dom";
 import { logUserOut } from "../apollo";
-import FollowButton from "./components/profile/FollowButtton";
 import { Button } from "./components/shared/SharedStyle";
 import PageTitle from "./components/shared/PageTitle";
-import { SeeProfileQuery, UnfollowUserMutation, User } from "../gql/graphql";
+import { UnfollowUserMutation, User } from "../gql/graphql";
 import useUser from "./hooks/useUser";
 
 const Container = styled.div`
